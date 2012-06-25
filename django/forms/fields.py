@@ -56,7 +56,7 @@ class Field(object):
 
     def __init__(self, required=True, widget=None, label=None, initial=None,
                  help_text=None, error_messages=None, show_hidden_initial=False,
-                 validators=[], localize=False):
+                 validators=[], localize=True):
         # required -- Boolean that specifies whether the field is required.
         #             True by default.
         # widget -- A Widget class, or instance of a Widget class, that should
@@ -968,7 +968,7 @@ class SplitDateTimeField(MultiValueField):
         errors = self.default_error_messages.copy()
         if 'error_messages' in kwargs:
             errors.update(kwargs['error_messages'])
-        localize = kwargs.get('localize', False)
+        localize = kwargs.get('localize', True)
         fields = (
             DateField(input_formats=input_date_formats,
                       error_messages={'invalid': errors['invalid_date']},
