@@ -16,12 +16,11 @@ def _resolve_name(name, package, level):
 
 def get_apppath(appname):
     def get(base, parts):
-        if not parts:
-            return base
-        base = os.path.join(base, parts[0])
-        if not (os.path.isfile(os.path.join(base, "__init__.py")) or (os.path.join(base, "__init__.pyc"))):
+        l0 = [base] + parts + ["__init__.py"]
+        l1 = [base] + parts + ["__init__.py"]
+        if not (os.path.isfile(os.path.join(*l0)) or os.path.isfile(os.path.join(*l1))):
             return None
-        return get(base, parts[1:])
+        return os.path.join(l0[:-1])
 
     import sys
     import os
