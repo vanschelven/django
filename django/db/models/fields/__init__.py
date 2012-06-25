@@ -56,6 +56,7 @@ class Field(object):
     # The auto_creation_counter is used for fields that Django implicitly
     # creates, creation_counter is used for all user-specified fields.
     creation_counter = 0
+    creation_level = 0
     auto_creation_counter = -1
     default_validators = [] # Default set of validators
     default_error_messages = {
@@ -125,7 +126,7 @@ class Field(object):
 
     def __cmp__(self, other):
         # This is needed because bisect does not take a comparison function.
-        return cmp(self.creation_counter, other.creation_counter)
+        return cmp((self.creation_level, self.creation_counter), (other.creation_level, other.creation_counter))
 
     def __deepcopy__(self, memodict):
         # We don't have to deepcopy very much here, since most things are not
