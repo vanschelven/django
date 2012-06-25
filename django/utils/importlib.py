@@ -14,6 +14,23 @@ def _resolve_name(name, package, level):
                               "package")
     return "%s.%s" % (package[:dot], name)
 
+def get_apppath(appname):
+    def get(base, parts):
+        if not parts:
+            return base
+        base = os.path.join(base, parts[0])
+        if not (os.path.isfile(os.path.join(base, "__init__.py")) or (os.path.join(base, "__init__.pyc"))):
+            return None
+        return get(base, parts[1:])
+
+    import sys
+    import os
+    parts = appname.split(".")
+    for base in sys.path:
+        result = get(base, parts)    
+        if not get(base, parts) is None:
+            return os.path.join(base, *parts)
+    raise Exception("No such app: %s" % appname)
 
 def import_module(name, package=None):
     """Import a module.
