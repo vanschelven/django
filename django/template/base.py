@@ -754,14 +754,15 @@ class Variable(object):
                         current = getattr(current, bit)
                     except (TypeError, AttributeError):
                         try:  # list-index lookup
+                            import sys
+                            cls, e, tb = sys.exc_info()
                             current = current[int(bit)]
                         except (IndexError,  # list index out of range
                                 ValueError,  # invalid literal for int()
                                 KeyError,    # current is a dict without `int(bit)` key
                                 TypeError):  # unsubscriptable object
-                            raise VariableDoesNotExist("Failed lookup for key "
-                                                       "[%s] in %r",
-                                                       (bit, current))  # missing attribute
+
+                            raise VariableDoesNotExist(str(e)), None, tb # missing attribute
                 if callable(current):
                     if getattr(current, 'do_not_call_in_templates', False):
                         pass
@@ -774,6 +775,8 @@ class Variable(object):
                             # GOTCHA: This will also catch any TypeError
                             # raised in the function itself.
                             current = context.get("TEMPLATE_STRING_IF_INVALID", settings.TEMPLATE_STRING_IF_INVALID) # invalid method call
+                            if "%s" in current:
+                                current = current % "TypeError, arguments *were* required"
         except Exception, e:
             if getattr(e, 'silent_variable_failure', False):
                 current = context.get("TEMPLATE_STRING_IF_INVALID", settings.TEMPLATE_STRING_IF_INVALID)

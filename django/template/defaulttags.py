@@ -134,10 +134,7 @@ class ForNode(Node):
         else:
             parentloop = {}
         context.push()
-        try:
-            values = self.sequence.resolve(context, True)
-        except VariableDoesNotExist:
-            values = []
+        values = self.sequence.resolve(context)
         if values is None:
             values = []
         if not hasattr(values, '__len__'):
