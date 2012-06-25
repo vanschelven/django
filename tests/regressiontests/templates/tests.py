@@ -1337,6 +1337,11 @@ class Templates(unittest.TestCase):
             'invalidstr05': ('{{ var }}', {}, ('', ('INVALID %s', 'var'))),
             'invalidstr06': ('{{ var.prop }}', {'var': {}}, ('', ('INVALID %s', 'var.prop'))),
 
+            'custom_invalidstr01': ('{{ var|default:"Foo" }}', {'TEMPLATE_STRING_IF_INVALID': 'CUSTOM_INVALID'}, ('CUSTOM_INVALID')),
+            'custom_invalidstr02': ('{{ var|default_if_none:"Foo" }}', {'TEMPLATE_STRING_IF_INVALID': 'CUSTOM_INVALID'}, ('CUSTOM_INVALID')),
+            'custom_invalidstr05': ('{{ var }}', {'TEMPLATE_STRING_IF_INVALID': 'CUSTOM_INVALID'}, ('CUSTOM_INVALID')),
+            'custom_invalidstr06': ('{{ var.prop }}', {'TEMPLATE_STRING_IF_INVALID': 'CUSTOM_INVALID'}, ('CUSTOM_INVALID')),
+
             ### MULTILINE #############################################################
 
             'multiline01': ("""

@@ -573,15 +573,15 @@ class FilterExpression(object):
                 if ignore_failures:
                     obj = None
                 else:
-                    if settings.TEMPLATE_STRING_IF_INVALID:
-                        global invalid_var_format_string
-                        if invalid_var_format_string is None:
-                            invalid_var_format_string = '%s' in settings.TEMPLATE_STRING_IF_INVALID
+                    template_string_if_invalid = context.get("TEMPLATE_STRING_IF_INVALID", settings.TEMPLATE_STRING_IF_INVALID)
+                    if template_string_if_invalid:
+                        global invalid_var_format_string # this is an artifact of the way the tests are built
+                        invalid_var_format_string = '%s' in template_string_if_invalid
                         if invalid_var_format_string:
-                            return settings.TEMPLATE_STRING_IF_INVALID % self.var
-                        return settings.TEMPLATE_STRING_IF_INVALID
+                            return template_string_if_invalid % self.var
+                        return template_string_if_invalid
                     else:
-                        obj = settings.TEMPLATE_STRING_IF_INVALID
+                        obj = template_string_if_invalid
         else:
             obj = self.var
         for func, args in self.filters:
@@ -766,17 +766,17 @@ class Variable(object):
                     if getattr(current, 'do_not_call_in_templates', False):
                         pass
                     elif getattr(current, 'alters_data', False):
-                        current = settings.TEMPLATE_STRING_IF_INVALID
+                        current = context.get("TEMPLATE_STRING_IF_INVALID", settings.TEMPLATE_STRING_IF_INVALID)
                     else:
                         try: # method call (assuming no args required)
                             current = current()
                         except TypeError: # arguments *were* required
                             # GOTCHA: This will also catch any TypeError
                             # raised in the function itself.
-                            current = settings.TEMPLATE_STRING_IF_INVALID  # invalid method call
+                            current = context.get("TEMPLATE_STRING_IF_INVALID", settings.TEMPLATE_STRING_IF_INVALID) # invalid method call
         except Exception, e:
             if getattr(e, 'silent_variable_failure', False):
-                current = settings.TEMPLATE_STRING_IF_INVALID
+                current = context.get("TEMPLATE_STRING_IF_INVALID", settings.TEMPLATE_STRING_IF_INVALID)
             else:
                 raise
 
