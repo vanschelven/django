@@ -378,14 +378,6 @@ subclass::
         because ``raw_id_fields`` and ``radio_fields`` imply custom widgets of
         their own.
 
-.. attribute:: ModelAdmin.get_changelist
-
-    .. versionchanged:: 1.2
-
-    Returns the Changelist class to be used for listing. By default,
-    ``django.contrib.admin.views.main.ChangeList`` is used. By inheriting this
-    class you can change the behavior of the listing.
-
 .. attribute:: ModelAdmin.inlines
 
     See :class:`InlineModelAdmin` objects below.
@@ -1185,6 +1177,12 @@ templates used by the :class:`ModelAdmin` views:
                         kwargs['choices'] += (('ready', 'Ready for deployment'),)
                 return super(MyModelAdmin, self).formfield_for_choice_field(db_field, request, **kwargs)
 
+.. method:: ModelAdmin.get_changelist(self, request, **kwargs)
+
+    Returns the Changelist class to be used for listing. By default,
+    ``django.contrib.admin.views.main.ChangeList`` is used. By inheriting this
+    class you can change the behavior of the listing.
+
 .. method:: ModelAdmin.has_add_permission(self, request)
 
     Should return ``True`` if adding an object is permitted, ``False``
@@ -1240,9 +1238,13 @@ Other methods
 
     Django view for the model instance addition page. See note below.
 
-.. method:: ModelAdmin.change_view(self, request, object_id, extra_context=None)
+.. method:: ModelAdmin.change_view(self, request, object_id, form_url='', extra_context=None)
 
     Django view for the model instance edition page. See note below.
+
+    .. versionchanged:: 1.4
+
+    The ``form_url`` parameter was added.
 
 .. method:: ModelAdmin.changelist_view(self, request, extra_context=None)
 
