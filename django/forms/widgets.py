@@ -243,7 +243,7 @@ class Input(Widget):
     input_type = None # Subclasses must define this.
 
     def _format_value(self, value):
-        if self.is_localized:
+        if not self.is_hidden and self.is_localized:
             return formats.localize_input(value)
         return value
 
@@ -487,18 +487,15 @@ class TimeInput(Input):
             pass
         return super(TimeInput, self)._has_changed(self._format_value(initial), data)
 
-
-# Defined at module level so that CheckboxInput is picklable (#17976)
-def boolean_check(v):
-    return not (v is False or v is None or v == '')
-
-
 class CheckboxInput(Widget):
     def __init__(self, attrs=None, check_test=None):
         super(CheckboxInput, self).__init__(attrs)
         # check_test is a callable that takes a value and returns True
         # if the checkbox should be checked for that value.
-        self.check_test = boolean_check if check_test is None else check_test
+        if check_test is None:
+            self.check_test = lambda v: not (v is False or v is None or v == '')
+        else:
+            self.check_test = check_test
 
     def render(self, name, value, attrs=None):
         final_attrs = self.build_attrs(attrs, type='checkbox', name=name)
