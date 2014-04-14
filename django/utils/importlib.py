@@ -16,6 +16,22 @@ def _resolve_name(name, package, level):
                               "package")
     return "%s.%s" % (package[:dot], name)
 
+def get_apppath(appname):
+    def get(base, parts):
+        l0 = [base] + parts + ["__init__.py"]
+        l1 = [base] + parts + ["__init__.py"]
+        if not (os.path.isfile(os.path.join(*l0)) or os.path.isfile(os.path.join(*l1))):
+            return None
+        return os.path.join(l0[:-1])
+
+    import sys
+    import os
+    parts = appname.split(".")
+    for base in sys.path:
+        result = get(base, parts)
+        if not get(base, parts) is None:
+            return os.path.join(base, *parts)
+    raise Exception("No such app: %s" % appname)
 
 if six.PY3:
     from importlib import import_module

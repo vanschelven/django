@@ -9,7 +9,7 @@ import gettext as gettext_module
 from threading import local
 import warnings
 
-from django.utils.importlib import import_module
+from django.utils.importlib import import_module, get_apppath
 from django.utils.datastructures import SortedDict
 from django.utils.encoding import force_str, force_text
 from django.utils.functional import memoize
@@ -156,8 +156,7 @@ def translation(language):
             return res
 
         for appname in reversed(settings.INSTALLED_APPS):
-            app = import_module(appname)
-            apppath = os.path.join(os.path.dirname(upath(app.__file__)), 'locale')
+            apppath = os.path.join(get_apppath(appname), 'locale')
 
             if os.path.isdir(apppath):
                 res = _merge(apppath)
