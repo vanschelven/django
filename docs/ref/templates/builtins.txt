@@ -951,7 +951,7 @@ current page::
 The first parameter of ``ssi`` can be a quoted literal or any other context
 variable.
 
-If the optional "parsed" parameter is given, the contents of the included
+If the optional ``parsed`` parameter is given, the contents of the included
 file are evaluated as template code, within the current context::
 
     {% ssi '/home/html/ljworld.com/includes/right_generic.html' parsed %}
@@ -959,6 +959,13 @@ file are evaluated as template code, within the current context::
 Note that if you use ``{% ssi %}``, you'll need to define
 :setting:`ALLOWED_INCLUDE_ROOTS` in your Django settings, as a security
 measure.
+
+.. note::
+    With the :ttag:`ssi` tag and the ``parsed`` parameter
+    there is no shared state between files -- each include is a completely
+    independent rendering process. This means it's not possible for example to
+    define blocks or alter the context in the current page using the included
+    file.
 
 See also: :ttag:`{% include %}<include>`.
 
@@ -2005,7 +2012,7 @@ If ``value`` is ``10``, the output will be ``1.000000E+01``.
 striptags
 ^^^^^^^^^
 
-Strips all [X]HTML tags.
+Makes all possible efforts to strip all [X]HTML tags.
 
 For example::
 
@@ -2013,6 +2020,16 @@ For example::
 
 If ``value`` is ``"<b>Joel</b> <button>is</button> a <span>slug</span>"``, the
 output will be ``"Joel is a slug"``.
+
+.. admonition:: No safety guarantee
+
+    Note that ``striptags`` doesn't give any guarantee about its output being
+    entirely HTML safe, particularly with non valid HTML input. So **NEVER**
+    apply the ``safe`` filter to a ``striptags`` output.
+    If you are looking for something more robust, you can use the ``bleach``
+    Python library, notably its `clean`_ method.
+
+.. _clean: http://bleach.readthedocs.org/en/latest/clean.html
 
 .. templatefilter:: time
 

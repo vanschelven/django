@@ -488,7 +488,7 @@ class BackendTestCase(TestCase):
     def create_squares_with_executemany(self, args):
         self.create_squares(args, 'format', True)
 
-    def create_squares(self, args, paramstyle, multiple):    
+    def create_squares(self, args, paramstyle, multiple):
         cursor = connection.cursor()
         opts = models.Square._meta
         tbl = connection.introspection.table_name_converter(opts.db_table)
@@ -560,7 +560,7 @@ class BackendTestCase(TestCase):
             # same test for DebugCursorWrapper
             self.create_squares(args, 'pyformat', multiple=True)
         self.assertEqual(models.Square.objects.count(), 9)
-        
+
     def test_unicode_fetches(self):
         #6254: fetchone, fetchmany, fetchall return strings as unicode objects
         qn = connection.ops.quote_name
@@ -610,6 +610,29 @@ class BackendTestCase(TestCase):
         query = 'CREATE TABLE %s (id INTEGER);' % models.Article._meta.db_table
         with self.assertRaises(DatabaseError):
             cursor.execute(query)
+
+    # Unfortunately with sqlite3 the in-memory test database cannot be closed.
+    @skipUnlessDBFeature('test_db_allows_multiple_connections')
+    def test_is_usable_after_database_disconnects(self):
+        """
+        Test that is_usable() doesn't crash when the database disconnects.
+
+        Regression for #21553.
+        """
+        # Open a connection to the database.
+        connection.cursor().close()
+        # Emulate a connection close by the database.
+        connection._close()
+        # Even then is_usable() should not raise an exception.
+        try:
+            self.assertFalse(connection.is_usable())
+        finally:
+            # Clean up the mess created by connection._close(). Since the
+            # connection is already closed, this crashes on some backends.
+            try:
+                connection.close()
+            except Exception:
+                pass
 
 
 # We don't make these tests conditional because that means we would need to

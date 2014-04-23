@@ -955,7 +955,8 @@ DEFAULT_FROM_EMAIL
 Default: ``'webmaster@localhost'``
 
 Default email address to use for various automated correspondence from the
-site manager(s).
+site manager(s). This doesn't include error messages sent to :setting:`ADMINS`
+and :setting:`MANAGERS`; for that, see :setting:`SERVER_EMAIL`.
 
 .. setting:: DEFAULT_INDEX_TABLESPACE
 
@@ -1266,7 +1267,7 @@ A tuple of IP addresses, as strings, that:
 
 * See debug comments, when :setting:`DEBUG` is ``True``
 * Receive X headers in admindocs if the ``XViewMiddleware`` is installed (see
-  :doc:`/topics/http/middleware`)
+  :doc:`/ref/contrib/admin/admindocs`)
 
 .. setting:: LANGUAGE_CODE
 
@@ -1656,6 +1657,12 @@ Default: ``'root@localhost'``
 
 The email address that error messages come from, such as those sent to
 :setting:`ADMINS` and :setting:`MANAGERS`.
+
+.. admonition:: Why are my emails sent from a different address?
+
+    This address is used only for error messages. It is *not* the address that
+    regular email messages sent with :meth:`~django.core.mail.send_mail()`
+    come from; for that, see :setting:`DEFAULT_FROM_EMAIL`.
 
 .. setting:: SHORT_DATE_FORMAT
 

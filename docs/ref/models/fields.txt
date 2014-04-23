@@ -39,19 +39,17 @@ The following arguments are available to all field types. All are optional.
 If ``True``, Django will store empty values as ``NULL`` in the database. Default
 is ``False``.
 
-Note that empty string values will always get stored as empty strings, not as
-``NULL``. Only use ``null=True`` for non-string fields such as integers,
-booleans and dates. For both types of fields, you will also need to set
-``blank=True`` if you wish to permit empty values in forms, as the
-:attr:`~Field.null` parameter only affects database storage (see
-:attr:`~Field.blank`).
-
 Avoid using :attr:`~Field.null` on string-based fields such as
-:class:`CharField` and :class:`TextField` unless you have an excellent reason.
-If a string-based field has ``null=True``, that means it has two possible values
-for "no data": ``NULL``, and the empty string. In most cases, it's redundant to
-have two possible values for "no data;" Django convention is to use the empty
-string, not ``NULL``.
+:class:`CharField` and :class:`TextField` because empty string values will
+always be stored as empty strings, not as ``NULL``. If a string-based field has
+``null=True``, that means it has two possible values for "no data": ``NULL``,
+and the empty string. In most cases, it's redundant to have two possible values
+for "no data;" the Django convention is to use the empty string, not ``NULL``.
+
+For both string-based and non-string-based fields, you will also need to
+set ``blank=True`` if you wish to permit empty values in forms, as the
+:attr:`~Field.null` parameter only affects database storage
+(see :attr:`~Field.blank`).
 
 .. note::
 
@@ -826,9 +824,9 @@ optional arguments:
     Name of a model field which will be auto-populated with the width of the
     image each time the model instance is saved.
 
-Requires the `Python Imaging Library`_.
+Requires the `Pillow`_ library.
 
-.. _Python Imaging Library: http://www.pythonware.com/products/pil/
+.. _Pillow: http://python-imaging.github.io/Pillow/
 
 By default, :class:`ImageField` instances are created as ``varchar(100)``
 columns in your database. As with other fields, you can change the maximum
@@ -1346,6 +1344,15 @@ your resulting ``User`` model will have the following attributes::
     True
     >>> hasattr(user, 'supervisor_of')
     True
+
+A ``DoesNotExist`` exception is raised when accessing the reverse relationship
+if an entry in the related table doesn't exist. For example, if a user doesn't
+have a supervisor designated by ``MySpecialUser``::
+
+    >>> user.supervisor_of
+    Traceback (most recent call last):
+        ...
+    DoesNotExist: User matching query does not exist.
 
 .. _onetoone-arguments:
 

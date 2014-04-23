@@ -307,7 +307,9 @@ subclass::
 
     * ``description``
         A string of optional extra text to be displayed at the top of each
-        fieldset, under the heading of the fieldset.
+        fieldset, under the heading of the fieldset. This string is not
+        rendered for :class:`~django.contrib.admin.TabularInline` due to its
+        layout.
 
         Note that this value is *not* HTML-escaped when it's displayed in
         the admin interface. This lets you include HTML if you so desire.
@@ -616,6 +618,17 @@ subclass::
       The field names in ``list_display`` will also appear as CSS classes in
       the HTML output, in the form of ``column-<field_name>`` on each ``<th>``
       element. This can be used to set column widths in a CSS file for example.
+
+    * Django will try to interpret every element of ``list_display`` in this
+      order:
+
+      * A field of the model.
+      * A callable.
+      * A string representing a ``ModelAdmin`` attribute.
+      * A string representing a model attribute.
+
+      For example if you have ``first_name`` as a model field and
+      as a ``ModelAdmin`` attribute, the model field will be used.
 
 
 .. attribute:: ModelAdmin.list_display_links
@@ -1241,7 +1254,12 @@ templates used by the :class:`ModelAdmin` views:
     ``obj`` being edited (or ``None`` on an add form) and is expected to return
     a ``list`` or ``tuple`` of :class:`~django.contrib.admin.InlineModelAdmin`
     objects, as described below in the :class:`~django.contrib.admin.InlineModelAdmin`
-    section.
+    section. For example, the following would return inlines without the default
+    filtering based on add, change, and delete permissions::
+
+        class MyModelAdmin(admin.ModelAdmin):
+            def get_inline_instances(request, obj=None):
+                return [inline(self.model, self.admin_site) for inline in self.inlines]
 
 .. method:: ModelAdmin.get_urls()
 

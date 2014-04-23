@@ -119,7 +119,7 @@ compilemessages
 
 .. django-admin:: compilemessages
 
-Compiles .po files created :djadmin:`makemessages` to .mo files for use with
+Compiles .po files created by :djadmin:`makemessages` to .mo files for use with
 the builtin gettext support. See :doc:`/topics/i18n/index`.
 
 Use the :djadminopt:`--locale` option (or its shorter version ``-l``) to
@@ -314,15 +314,11 @@ needed.
 ``inspectdb`` works with PostgreSQL, MySQL and SQLite. Foreign-key detection
 only works in PostgreSQL and with certain types of MySQL tables.
 
-If your plan is that your Django application(s) modify data (i.e. edit, remove
-records and create new ones) in the existing database tables corresponding to
-any of the introspected models then one of the manual review and edit steps
-you need to perform on the resulting ``models.py`` file is to change the
-Python declaration of each one of these models to specify it is a
-:attr:`managed <django.db.models.Options.managed>` one.
-
-This serves as an explicit opt-in to give your nascent Django project write
-access to your precious data on a model by model basis.
+By default, ``inspectdb`` creates unmanaged models. That is, ``managed = False``
+in the model's ``Meta`` class tells Django not to manage each table's creation
+and deletion. If you do want to allow Django to manage the table's lifecycle,
+you'll need to change the :attr:`~django.db.models.Options.managed` option to
+``True`` (or simply remove it because ``True`` is its default value).
 
 The :djadminopt:`--database` option may be used to specify the
 database to introspect.
@@ -1027,7 +1023,7 @@ through the template engine: the files whose extensions match the
 with the ``--name`` option. The :class:`template context
 <django.template.Context>` used is:
 
-- Any option passed to the startapp command (among the command's supported
+- Any option passed to the ``startapp`` command (among the command's supported
   options)
 - ``app_name`` -- the app name as passed to the command
 - ``app_directory`` -- the full path of the newly created app
@@ -1097,8 +1093,8 @@ through the template engine: the files whose extensions match the
 with the ``--name`` option. The :class:`template context
 <django.template.Context>` used is:
 
-- Any option passed to the startapp command (among the command's supported
-  options)
+- Any option passed to the ``startproject`` command (among the command's
+  supported options)
 - ``project_name`` -- the project name as passed to the command
 - ``project_directory`` -- the full path of the newly created project
 - ``secret_key`` -- a random key for the :setting:`SECRET_KEY` setting

@@ -625,7 +625,8 @@ class DatabaseWrapper(BaseDatabaseWrapper):
         pass
 
     def _set_autocommit(self, autocommit):
-        self.connection.autocommit = autocommit
+        with self.wrap_database_errors:
+            self.connection.autocommit = autocommit
 
     def check_constraints(self, table_names=None):
         """
@@ -642,7 +643,7 @@ class DatabaseWrapper(BaseDatabaseWrapper):
             else:
                 # Use a cx_Oracle cursor directly, bypassing Django's utilities.
                 self.connection.cursor().execute("SELECT 1 FROM DUAL")
-        except DatabaseError:
+        except Database.Error:
             return False
         else:
             return True
