@@ -223,7 +223,7 @@ class IntegerField(Field):
 
     def __init__(self, max_value=None, min_value=None, *args, **kwargs):
         self.max_value, self.min_value = max_value, min_value
-        if kwargs.get('localize') and self.widget == NumberInput:
+        if kwargs.get('localize', True) and self.widget == NumberInput:
             # Localized number input is not well supported on most browsers
             kwargs.setdefault('widget', super(IntegerField, self).widget)
         super(IntegerField, self).__init__(*args, **kwargs)
