@@ -1711,6 +1711,7 @@ adds some of its own (the shared features are actually defined in the
 - :attr:`~ModelAdmin.radio_fields`
 - :attr:`~ModelAdmin.readonly_fields`
 - :attr:`~InlineModelAdmin.raw_id_fields`
+- :meth:`~ModelAdmin.formfield_for_choice_field`
 - :meth:`~ModelAdmin.formfield_for_foreignkey`
 - :meth:`~ModelAdmin.formfield_for_manytomany`
 - :meth:`~ModelAdmin.has_add_permission`
@@ -1759,8 +1760,6 @@ The ``InlineModelAdmin`` class adds:
 
     :meth:`InlineModelAdmin.get_extra` also allows you to customize the number
     of extra forms.
-
-    .. _ref-contrib-admin-inline-max-num:
 
 .. attribute:: InlineModelAdmin.max_num
 
