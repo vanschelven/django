@@ -88,6 +88,10 @@ class Field(object):
 
         # Trigger the localization machinery if needed.
         self.localize = localize
+
+        if isinstance(widget, HiddenInput):
+            self.localize = False
+
         if self.localize:
             widget.is_localized = True
 
