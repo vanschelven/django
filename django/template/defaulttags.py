@@ -145,7 +145,9 @@ class ForNode(Node):
         else:
             parentloop = {}
         context.push()
-        values = self.sequence.resolve(context, True)
+        values = self.sequence.resolve(context)
+        if values is None:
+            values = []
         if not hasattr(values, '__len__'):
             values = list(values)
         len_values = len(values)
