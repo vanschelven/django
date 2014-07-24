@@ -791,10 +791,6 @@ class Variable(object):
                             # GOTCHA: This will also catch any TypeError
                             # raised in the function itself.
                             current = settings.TEMPLATE_STRING_IF_INVALID  # invalid method call
-                            if "%s" in current:
-                                current = current % "%s: missing arguments"
-                                current = current % bit
-
         except Exception as e:
             if getattr(e, 'silent_variable_failure', False):
                 current = settings.TEMPLATE_STRING_IF_INVALID
