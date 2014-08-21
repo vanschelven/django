@@ -61,6 +61,12 @@ class BooleanModel(models.Model):
     bfield = models.BooleanField(default=None)
     string = models.CharField(max_length=10, default='abc')
 
+class DateTimeModel(models.Model):
+    d = models.DateField()
+    dt = models.DateTimeField()
+    t = models.TimeField()
+
+
 class FksToBooleans(models.Model):
     """Model wih FKs to models with {Null,}BooleanField's, #15040"""
     bf = models.ForeignKey(BooleanModel)
@@ -132,7 +138,7 @@ if Image:
         attr_class = TestImageFieldFile
 
     # Set up a temp directory for file storage.
-    temp_storage_dir = tempfile.mkdtemp()
+    temp_storage_dir = tempfile.mkdtemp(dir=os.environ['DJANGO_TEST_TEMP_DIR'])
     temp_storage = FileSystemStorage(temp_storage_dir)
     temp_upload_to_dir = os.path.join(temp_storage.location, 'tests')
 

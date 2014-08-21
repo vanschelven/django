@@ -210,7 +210,8 @@ a dictionary as the default, use a ``lambda`` as follows::
 .. attribute:: Field.editable
 
 If ``False``, the field will not be displayed in the admin or any other
-:class:`~django.forms.ModelForm`. Default is ``True``.
+:class:`~django.forms.ModelForm`. They are also skipped during :ref:`model
+validation <validating-objects>`. Default is ``True``.
 
 ``error_messages``
 ------------------
@@ -240,7 +241,9 @@ desire. For example::
     help_text="Please use the following format: <em>YYYY-MM-DD</em>."
 
 Alternatively you can use plain text and
-``django.utils.html.escape()`` to escape any HTML special characters.
+``django.utils.html.escape()`` to escape any HTML special characters. Ensure
+that you escape any help text that may come from untrusted users to avoid a
+cross-site scripting attack.
 
 ``primary_key``
 ---------------
@@ -826,7 +829,7 @@ optional arguments:
 
 Requires the `Pillow`_ library.
 
-.. _Pillow: http://python-imaging.github.io/Pillow/
+.. _Pillow: http://pillow.readthedocs.org/en/latest/
 
 By default, :class:`ImageField` instances are created as ``varchar(100)``
 columns in your database. As with other fields, you can change the maximum
@@ -1279,6 +1282,19 @@ that control how the relationship functions.
     The most common use for this option is when you want to associate
     :ref:`extra data with a many-to-many relationship
     <intermediary-manytomany>`.
+
+    If you don't specify an explicit ``through`` model, there is still an
+    implicit ``through`` model class you can use to directly access the table
+    created to hold the association. It has three fields:
+
+    * ``id``: the primary key of the relation.
+    * ``<containing_model>_id``: the ``id`` of the model that declares the
+      ``ManyToManyField``.
+    * ``<other_model>_id``: the ``id`` of the model that the
+      ``ManyToManyField`` points to.
+
+    This class can be used to query associated records for a given model
+    instance like a normal model.
 
 .. attribute:: ManyToManyField.db_table
 

@@ -594,7 +594,7 @@ Supported for the PostgreSQL_ (``postgresql_psycopg2``) and MySQL_ (``mysql``)
 backends.
 
 .. _PostgreSQL: http://www.postgresql.org/docs/current/static/multibyte.html
-.. _MySQL: http://dev.mysql.com/doc/refman/5.0/en/charset-database.html
+.. _MySQL: http://dev.mysql.com/doc/refman/5.6/en/charset-database.html
 
 .. setting:: TEST_COLLATION
 
@@ -1114,13 +1114,13 @@ FILE_UPLOAD_PERMISSIONS
 
 Default: ``None``
 
-The numeric mode (i.e. ``0644``) to set newly uploaded files to. For
+The numeric mode (i.e. ``0o644``) to set newly uploaded files to. For
 more information about what these modes mean, see the documentation for
 :func:`os.chmod`.
 
 If this isn't given or is ``None``, you'll get operating-system
 dependent behavior. On most platforms, temporary files will have a mode
-of ``0600``, and files saved from memory will be saved using the
+of ``0o600``, and files saved from memory will be saved using the
 system's standard umask.
 
 .. warning::
@@ -1439,6 +1439,11 @@ URL that handles the media served from :setting:`MEDIA_ROOT`, used
 for :doc:`managing stored files </topics/files>`. It must end in a slash if set
 to a non-empty value. You will need to :ref:`configure these files to be served
 <serving-uploaded-files-in-development>` in both development and production.
+
+In order to use ``{{ MEDIA_URL }}`` in your templates, you must have
+``'django.core.context_processors.media'`` in your
+:setting:`TEMPLATE_CONTEXT_PROCESSORS`. It's there by default, but be sure
+to include it if you override that setting and want this behavior.
 
 Example: ``"http://media.example.com/"``
 

@@ -1189,9 +1189,10 @@ templates used by the :class:`ModelAdmin` views:
                 queryset, use_distinct = super(PersonAdmin, self).get_search_results(request, queryset, search_term)
                 try:
                     search_term_as_int = int(search_term)
-                    queryset |= self.model.objects.filter(age=search_term_as_int)
-                except:
+                except ValueError:
                     pass
+                else:
+                    queryset |= self.model.objects.filter(age=search_term_as_int)
                 return queryset, use_distinct
 
 .. method:: ModelAdmin.save_related(request, form, formsets, change)
@@ -1258,7 +1259,7 @@ templates used by the :class:`ModelAdmin` views:
     filtering based on add, change, and delete permissions::
 
         class MyModelAdmin(admin.ModelAdmin):
-            def get_inline_instances(request, obj=None):
+            def get_inline_instances(self, request, obj=None):
                 return [inline(self.model, self.admin_site) for inline in self.inlines]
 
 .. method:: ModelAdmin.get_urls()

@@ -314,6 +314,11 @@ needed.
 ``inspectdb`` works with PostgreSQL, MySQL and SQLite. Foreign-key detection
 only works in PostgreSQL and with certain types of MySQL tables.
 
+Django doesn't create database defaults when a
+:attr:`~django.db.models.Field.default` is specified on a model field.
+Similarly, database defaults aren't translated to model field defaults or
+detected in any fashion by ``inspectdb``.
+
 By default, ``inspectdb`` creates unmanaged models. That is, ``managed = False``
 in the model's ``Meta`` class tells Django not to manage each table's creation
 and deletion. If you do want to allow Django to manage the table's lifecycle,
@@ -687,8 +692,8 @@ Write stderr to the *FILE* file.
 
 ``umask=UMASK``
 
-Umask to use when daemonizing. The value is interpeted as an octal number
-(default value is ``022``).
+Umask to use when daemonizing. The value is interpreted as an octal number
+(default value is ``0o22``).
 
 Example usage::
 
@@ -1384,7 +1389,7 @@ variable.
 Note that this option is unnecessary in ``manage.py``, because it takes care of
 setting the Python path for you.
 
-.. _import search path: http://diveintopython.net/getting_to_know_python/everything_is_an_object.html
+.. _import search path: http://www.diveintopython.net/getting_to_know_python/everything_is_an_object.html
 
 .. django-admin-option:: --settings
 
