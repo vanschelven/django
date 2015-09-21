@@ -61,7 +61,7 @@ class Field(object):
 
     def __init__(self, required=True, widget=None, label=None, initial=None,
                  help_text='', error_messages=None, show_hidden_initial=False,
-                 validators=[], localize=False):
+                 validators=[], localize=True):
         # required -- Boolean that specifies whether the field is required.
         #             True by default.
         # widget -- A Widget class, or instance of a Widget class, that should
@@ -90,6 +90,10 @@ class Field(object):
 
         # Trigger the localization machinery if needed.
         self.localize = localize
+
+        if isinstance(widget, HiddenInput):
+            self.localize = False
+
         if self.localize:
             widget.is_localized = True
 
@@ -227,7 +231,7 @@ class IntegerField(Field):
 
     def __init__(self, max_value=None, min_value=None, *args, **kwargs):
         self.max_value, self.min_value = max_value, min_value
-        if kwargs.get('localize') and self.widget == NumberInput:
+        if kwargs.get('localize', True) and self.widget == NumberInput:
             # Localized number input is not well supported on most browsers
             kwargs.setdefault('widget', super(IntegerField, self).widget)
         super(IntegerField, self).__init__(*args, **kwargs)
@@ -1137,7 +1141,7 @@ class SplitDateTimeField(MultiValueField):
         errors = self.default_error_messages.copy()
         if 'error_messages' in kwargs:
             errors.update(kwargs['error_messages'])
-        localize = kwargs.get('localize', False)
+        localize = kwargs.get('localize', True)
         fields = (
             DateField(input_formats=input_date_formats,
                       error_messages={'invalid': errors['invalid_date']},
